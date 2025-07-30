@@ -36,6 +36,6 @@ module.exports = {
     signOut: (req, res) => {
         req.user = null;
         res.clearCookie('token');
-        res.json({ message: 'signed out successfully' });
+        res.json({ success: true, message: 'signed out successfully' });
     }
 };

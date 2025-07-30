@@ -1,5 +1,4 @@
 const { Model } = require('objection');
-const bcrypt = require('bcrypt');
 
 class Contact extends Model {
     static get tableName() {
@@ -20,6 +19,7 @@ class Contact extends Model {
                 name: { type: 'string' },
                 email: { type: 'string', format: 'email' },
                 phone: { type: 'string', nullable: true },
+                photo: { type: 'string', nullable: false },
                 address: { type: 'string', nullable: true },
             },
         };

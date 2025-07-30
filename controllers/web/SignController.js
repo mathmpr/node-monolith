@@ -4,8 +4,5 @@ module.exports = {
     },
     signUp: (req, res) => {
         return res.render('signUp');
-    },
-    signOut: (req, res) => {
-
     }
 };

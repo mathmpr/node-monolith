@@ -2,17 +2,17 @@ const express = require('express');
 const router = express.Router();
 
 const authMiddleware = require('../middlewares/auth');
+const signedMiddleware = require('../middlewares/signed');
 
 const SignController = require('../controllers/web/SignController');
 const ContactsController = require('../controllers/web/ContactsController');
 
-router.get('/', SignController.signIn);
-router.get('/sign-in', SignController.signIn);
-router.get('/sign-up', SignController.signUp);
-router.get('/sign-out', SignController.signOut);
+router.get('/', signedMiddleware, SignController.signIn);
+router.get('/sign-in', signedMiddleware, SignController.signIn);
+router.get('/sign-up', signedMiddleware, SignController.signUp);
 
 router.get('/contacts', authMiddleware, ContactsController.index);
-
-
+router.get('/contacts/create', authMiddleware, ContactsController.create);
+router.get('/contacts/:id/update', authMiddleware, ContactsController.update);
 
 module.exports = router;
