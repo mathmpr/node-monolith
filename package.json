@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "star": "node main.js"
+    "start": "node main.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
