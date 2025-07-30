@@ -1,9 +1,9 @@
 const { Model } = require('objection');
 const bcrypt = require('bcrypt');
 
-class User extends Model {
+class Contact extends Model {
     static get tableName() {
-        return 'users';
+        return 'contacts';
     }
 
     static get idColumn() {
@@ -13,19 +13,21 @@ class User extends Model {
     static get jsonSchema() {
         return {
             type: 'object',
-            required: ['name', 'email', 'password'],
+            required: ['name', 'email'],
+
             properties: {
                 id: { type: 'integer' },
                 name: { type: 'string' },
-                email: { type: 'string' },
-                password: { type: 'string' },
+                email: { type: 'string', format: 'email' },
+                phone: { type: 'string', nullable: true },
+                address: { type: 'string', nullable: true },
             },
         };
     }
 
-    async verifyPassword(requestPassword) {
-        return bcrypt.compare(requestPassword, this.password);
+    async getUser() {
+        return this.$relatedQuery('user');
     }
 }
 
-module.exports = User;
+module.exports = Contact;

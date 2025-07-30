@@ -1,0 +1,77 @@
+<%- include('common/head.ejs', { title: 'Sign-up' }) %>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+
+            <div class="card shadow rounded-4 border-0">
+                <div class="card-body p-4">
+                    <h3 class="card-title text-center mb-4">Criar Conta</h3>
+
+                    <form id="signup" method="POST" action="api/sign-up">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Nome completo</label>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Seu nome" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">E-mail</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="email@exemplo.com" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Senha</label>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="******" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Confirmar Senha</label>
+                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="******" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 mt-3">Cadastrar</button>
+                    </form>
+
+                    <div class="text-center mt-3">
+                        <a href="/sign-in" class="text-decoration-none">Já tem uma conta? Entrar</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<%- include('common/end.ejs') %>
+<script>
+    $(document).ready(function() {
+        let password = $('#password');
+        let passwordConfirm = $('#confirmPassword');
+        let form = $('#signup');
+        form.on('submit', function(event) {
+            event.preventDefault();
+            if (password.val() !== passwordConfirm.val()) {
+                toastr.error('As senhas não coincidem. Por favor, verifique e tente novamente.');
+            }
+            axios.post(form.attr('action'), {
+                name: $('#name').val(),
+                email: $('#email').val(),
+                password: password.val()
+            }).then(function(response) {
+                if (response.data.token) {
+                    localStorage.setItem('token', response.data.token);
+                    toastr.success('Cadastro realizado com sucesso! Redirecionando para a página de login...');
+                    setTimeout(function() {
+                        window.location.href = '/contacts';
+                    }, 2000);
+                } else {
+                    toastr.error('Erro ao cadastrar. Tente novamente.');
+                }
+            }).catch(function(error) {
+                if (error.response.data.type === 'UniqueViolationError') {
+                    toastr.error('E-mail já cadastrado. Por favor, use outro e-mail.');
+                    return;
+                }
+                toastr.error('Erro ao cadastrar. Tente novamente.');
+            });
+        });
+    });
+</script>
