@@ -1,33 +1,17 @@
 <%- include('../common/head.ejs', {
-title: typeof title !== 'undefined' ? title : 'Sem título',
+    title: typeof title !== 'undefined' ? title : 'Contacts',
 }) %>
-
-<h1>Bem-vindo ao Projeto Node + Express + EJS</h1>
-<p id="mensagem">Mensagem carregando...</p>
-
-
-
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Lista de Contatos</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            padding-top: 70px;
-        }
-        .card-img {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 50%;
-        }
-    </style>
-</head>
-<body>
-<!-- Navbar -->
+<style>
+    body {
+        padding-top: 70px;
+    }
+    .card-img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+</style>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">MeuApp</a>
