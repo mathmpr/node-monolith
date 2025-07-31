@@ -11,18 +11,19 @@
     <% if (!contact) { %>
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4>Contato não encontrado!</h4>
-            <a href="<%= previous ? previous : '/contacts'%>" class="btn btn-primary">Voltar</a>
+            <a href="<%= previous ? previous : '/contacts' %>" class="btn btn-primary">Voltar</a>
         </div>
     <% } else { %>
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2></h2>
-            <a href="<%= previous ? previous : '/contacts'%>" class="btn btn-primary">Voltar</a>
+            <a href="<%= previous ? previous : '/contacts' %>" class="btn btn-primary">Voltar</a>
         </div>
 
         <form id="contactForm" enctype="multipart/form-data" novalidate class="needs-validation">
             <div class="mb-3">
                 <label for="name" class="form-label">Nome Completo</label>
-                <input type="text" class="form-control" id="name" name="name" value="<%= contact.name %>" required>
+                <input minlength="5" type="text" class="form-control" id="name" name="name" value="<%= contact.name %>"
+                       required>
                 <div class="invalid-feedback">Nome é obrigatório.</div>
             </div>
 
@@ -34,7 +35,8 @@
 
             <div class="mb-3">
                 <label for="phone" class="form-label">Celular</label>
-                <input type="text" class="form-control" id="phone" name="phone" value="<%= contact.phone %>" required>
+                <input type="text" minlength="9" maxlength="9" class="form-control" id="phone" name="phone"
+                       value="<%= contact.phone %>" inputmode="numeric" required>
                 <div class="invalid-feedback">Número de celular é obrigatório.</div>
             </div>
 
@@ -68,13 +70,57 @@
                 ? 'put'
                 : 'post' %>";
 
+        document.querySelector('#phone').addEventListener('beforeinput', (e) => {
+            if (e.inputType === 'insertText' && /\D/.test(e.data)) {
+                e.preventDefault();
+            }
+        });
+
+        function collectFieldErrors(form) {
+            const errors = {};
+            for (const el of form.elements) {
+                if (!el.willValidate) continue;
+
+                const v = el.validity;
+                if (!v.valid) {
+                    const fieldErrors = [];
+                    if (v.valueMissing) fieldErrors.push('Campo obrigatório');
+                    if (v.typeMismatch) fieldErrors.push('Formato inválido');
+                    if (v.tooShort) fieldErrors.push(`Muito curto (mínimo ${el.minLength} caracteres)`);
+                    if (v.tooLong) fieldErrors.push(`Muito longo (máximo ${el.maxLength} caracteres)`);
+                    if (v.patternMismatch) fieldErrors.push('Não corresponde ao padrão esperado');
+                    if (v.rangeUnderflow) fieldErrors.push(`Valor abaixo do mínimo (${el.min})`);
+                    if (v.rangeOverflow) fieldErrors.push(`Valor acima do máximo (${el.max})`);
+                    if (v.stepMismatch) fieldErrors.push('Incremento inválido');
+                    if (v.badInput) fieldErrors.push('Entrada inválida');
+                    if (v.customError) fieldErrors.push(el.validationMessage);
+
+                    errors[el.name || el.id || el.type] = {
+                        messages: fieldErrors,
+                        fullMessage: el.validationMessage
+                    };
+                }
+            }
+            return errors;
+        }
+
         const form = document.querySelector('#contactForm');
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
             event.stopPropagation();
 
+            $('.invalid-feedback').hide();
+
             if (!form.checkValidity()) {
-                form.classList.add('was-validated');
+                let errors = collectFieldErrors(form);
+                for(let field in errors) {
+                    let fieldElement = $(`[name="${field}"], [id="${field}"]`);
+                    if (fieldElement.length) {
+                        let feedback = fieldElement.closest('div').find('.invalid-feedback');
+                        feedback.show();
+                        feedback.html(errors[field].fullMessage);
+                    }
+                }
                 return;
             }
 

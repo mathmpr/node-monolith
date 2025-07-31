@@ -16,9 +16,9 @@ class Contact extends Model {
 
             properties: {
                 id: { type: 'integer' },
-                name: { type: 'string' },
+                name: { type: 'string', minLength: 5},
                 email: { type: 'string', format: 'email' },
-                phone: { type: 'string', nullable: true },
+                phone: { type: 'string', nullable: true, maxLength: 9, minLength: 9 },
                 photo: { type: 'string', nullable: false },
                 address: { type: 'string', nullable: true },
             },
