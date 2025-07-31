@@ -24,6 +24,7 @@ module.exports = {
         User.query()
             .insert({ name, email, password: bcrypt.hashSync(password, 10) })
             .then(user => {
+                req.flash('success', 'Cadastro realizado com sucesso!');
                 setToken(user, res);
             })
             .catch(err => {

@@ -18,6 +18,23 @@ module.exports = {
             contact: {}
         });
     },
+    view: async (req, res) => {
+        const contact = await Contact.query()
+            .findById(req.params.id)
+            .where('user_id', req.user.id);
+
+        if (!contact) {
+            return res.status(404).render('contacts/view', {
+                user: req.user,
+                contact: false
+            });
+        }
+
+        res.render('contacts/view', {
+            user: req.user,
+            contact,
+        });
+    },
     update: async (req, res) => {
         const contact = await Contact.query()
             .findById(req.params.id)

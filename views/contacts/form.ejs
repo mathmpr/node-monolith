@@ -1,6 +1,9 @@
-<%- include('../common/head.ejs', {
-title: typeof title !== 'undefined' ? title : 'Contacts - New',
-}) %>
+<html lang="pt">
+<head>
+    <title>Contacts - <%= (contact && contact.id) ? 'Edit - ' + contact.email : 'New' %></title>
+    <%- include('../common/head.ejs') %>
+</head>
+<body class="bg-light">
 
 <%- include('common/nav.ejs', {title: 'Contacts - ' + (contact && contact.id ? ('Edit - ' + contact.email) : 'New'), user}) %>
 
@@ -8,12 +11,12 @@ title: typeof title !== 'undefined' ? title : 'Contacts - New',
     <% if (!contact) { %>
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4>Contato não encontrado!</h4>
-            <a href="/contacts" class="btn btn-primary">Voltar</a>
+            <a href="<%= previous ? previous : '/contacts'%>" class="btn btn-primary">Voltar</a>
         </div>
     <% } else { %>
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2></h2>
-            <a href="/contacts" class="btn btn-primary">Voltar</a>
+            <a href="<%= previous ? previous : '/contacts'%>" class="btn btn-primary">Voltar</a>
         </div>
 
         <form id="contactForm" enctype="multipart/form-data" novalidate class="needs-validation">
@@ -81,22 +84,24 @@ title: typeof title !== 'undefined' ? title : 'Contacts - New',
                 await axios.request({
                     data: formData,
                     method: axiosMethod,
-                    url,
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                        authorization: 'Bearer ' + localStorage.getItem('token'),
-                    },
+                    url
                 });
-                toastr.success('Contato salvo com sucesso!');
-                form.reset();
-                form.classList.remove('was-validated');
-                setTimeout(() => {
-                    window.location.href = '/contacts';
-                }, 2000);
+                window.location.href = '/contacts';
             } catch (error) {
+                let type = error.response && error.response.data && error.response.data.type ? error.response.data.type : 'error';
+                if (type === 'phone') {
+                    toastr.error('Telefone já está em uso em outro contato.');
+                    return;
+                }
+                if (type === 'email') {
+                    toastr.error('Email já está em uso em outro contato.');
+                    return;
+                }
                 toastr.error('Erro ao salvar contato. Verifique os dados e tente novamente.');
             }
         });
     })();
 </script>
 <%- include('../common/end') %>
+</body>
+</html>

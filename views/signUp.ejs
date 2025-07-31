@@ -1,4 +1,9 @@
-<%- include('common/head.ejs', { title: 'Sign-up' }) %>
+<html lang="pt">
+<head>
+    <title>Sign-up</title>
+    <%- include('../common/head.ejs' %>
+</head>
+<body class="bg-light">
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
@@ -58,10 +63,7 @@
             }).then(function(response) {
                 if (response.data.token) {
                     localStorage.setItem('token', response.data.token);
-                    toastr.success('Cadastro realizado com sucesso! Redirecionando para a página de contatos...');
-                    setTimeout(function() {
-                        window.location.href = '/contacts';
-                    }, 2000);
+                    window.location.href = '/contacts';
                 } else {
                     toastr.error('Erro ao cadastrar. Tente novamente.');
                 }
@@ -75,3 +77,5 @@
         });
     });
 </script>
+</body>
+</html>

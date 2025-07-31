@@ -14,5 +14,6 @@ router.get('/sign-up', signedMiddleware, SignController.signUp);
 router.get('/contacts', authMiddleware, ContactsController.index);
 router.get('/contacts/create', authMiddleware, ContactsController.create);
 router.get('/contacts/:id/update', authMiddleware, ContactsController.update);
+router.get('/contacts/:id/view', authMiddleware, ContactsController.view);
 
 module.exports = router;

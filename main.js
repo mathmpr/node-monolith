@@ -5,6 +5,8 @@ const knex = require('knex');
 const path = require('path');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const flash = require('connect-flash');
 
 const knexConfig = require('./knexfile');
 const db = knex(knexConfig.development);
@@ -21,6 +23,30 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'any-secret-thing',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 60000 }
+}));
+
+app.use(flash());
+app.use((req, res, next) => {
+    if (!res.locals.flash) {
+        res.locals.flash = {
+            success: req.flash('success'),
+            error: req.flash('error'),
+            info: req.flash('info')
+        };
+        next();
+    }
+});
+
+app.use((req, res, next) => {
+    res.previous = req.get('Referer') || req.get('Referrer') || false;
+    res.locals.previous = res.previous;
+    next();
+});
 
 const webRoutes = require('./routes/web');
 const apiRoutes = require('./routes/api');

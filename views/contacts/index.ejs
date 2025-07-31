@@ -1,14 +1,17 @@
-<%- include('../common/head.ejs', {
-title: typeof title !== 'undefined' ? title : 'Contacts',
-}) %>
-<style>
-    .card-img {
-        width: 80px;
-        height: 80px;
-        object-fit: cover;
-        border-radius: 50%;
-    }
-</style>
+<html lang="pt">
+<head>
+    <title>Contacts</title>
+    <%- include('../common/head.ejs') %>
+    <style>
+        .card-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body class="bg-light">
 <%- include('common/nav.ejs', {title: 'Contacts - List', user}) %>
 <div class="container" style="margin-top: 80px;">
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -29,8 +32,9 @@ title: typeof title !== 'undefined' ? title : 'Contacts',
                             <p class="mb-1 text-truncate w-100"><strong>Email:</strong> <%= contact.email %></p>
                             <p class="mb-2 text-truncate w-100"><strong>Endereço:</strong> <%= contact.address || '-' %></p>
                             <div class="d-flex gap-2">
+                                <a href="/contacts/<%= contact.id %>/view" class="btn btn-sm btn-primary">Detalhes</a>
                                 <a href="/contacts/<%= contact.id %>/update" class="btn btn-sm btn-success">Editar</a>
-                                <a  data-bs-toggle="modal" data-bs-target="#confirmModal" href="/api/contacts/<%= contact.id %>/delete"
+                                <a data-bs-toggle="modal" data-bs-target="#confirmModal" href="/api/contacts/<%= contact.id %>/delete"
                                    class="deleteContact btn btn-sm btn-danger">Deletar</a>
                             </div>
                         </div>
@@ -70,8 +74,13 @@ title: typeof title !== 'undefined' ? title : 'Contacts',
             lastUrl = $(this);
         });
         $('#confirmDelete').on('click', function () {
-            axios.delete(lastUrl.attr('href'))
-                .then(function (response) {
+            axios.request({
+                method: 'delete',
+                url: lastUrl.attr('href'),
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }).then(function (response) {
                     if (response.data.success) {
                         toastr.success('Contato deletado com sucesso!');
                         lastUrl.closest('.contactCard').fadeOut('slow', function () {
@@ -92,3 +101,5 @@ title: typeof title !== 'undefined' ? title : 'Contacts',
         });
     });
 </script>
+</body>
+</html>
